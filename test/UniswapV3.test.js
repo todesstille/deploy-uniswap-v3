@@ -25,6 +25,9 @@ describe("Test template", function () {
         },
       });
     const NonfungiblePositionManager = await ethers.getContractFactory("NonfungiblePositionManager");
+    const TickLens = await ethers.getContractFactory("TickLens");
+    const Quoter = await ethers.getContractFactory("Quoter");
+    const QuoterV2 = await ethers.getContractFactory("QuoterV2");
     
     factoryV3 = await UniswapV3Factory.deploy();
     token0 = await MockToken.deploy("Mock Token 0", "MCK0", "1000000000000000000000000000");
@@ -38,6 +41,11 @@ describe("Test template", function () {
     positionManager = await NonfungiblePositionManager.deploy(factoryV3.address, weth.address, tokenDescriptor.address);
 
     swapRouter = await SwapRouter.deploy(factoryV3.address, weth.address);
+
+    tickLens = await TickLens.deploy();
+
+    quoter = await Quoter.deploy(factoryV3.address, weth.address);
+    quoterV2 = await QuoterV2.deploy(factoryV3.address, weth.address);
   });
 
   describe("Tokens", function () {
@@ -77,6 +85,24 @@ describe("Test template", function () {
         admin.address,
         9999999999
       ]);
+
+      let expected = await quoter.callStatic.quoteExactOutputSingle(
+        token0.address,
+        token1.address,
+        500,
+        1000000,
+        0
+      );
+
+      let expected2 = await quoterV2.callStatic.quoteExactOutputSingle([
+        token0.address,
+        token1.address,
+        1000000,
+        500,
+        0
+      ]);
+
+      expect(expected).to.equal(expected2[0]);
 
       await token0.approve(swapRouter.address, 1100000);
 
