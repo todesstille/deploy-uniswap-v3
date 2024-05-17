@@ -6,16 +6,9 @@ require('dotenv').config();
 module.exports = async (deployer) => {
   const Factory = await hre.ethers.getContractFactory("UniswapV3Factory");
   const SwapRouter = await hre.ethers.getContractFactory("SwapRouter");
-  const NFTDescriptor = await hre.ethers.getContractFactory("NFTDescriptor");
-  
-  const nftDescriptor = await deployer.deploy(NFTDescriptor);
-  
-  const NonfungibleTokenPositionDescriptor = await hre.ethers.getContractFactory("NonfungibleTokenPositionDescriptor", {
-    libraries: {
-      NFTDescriptor: nftDescriptor.address,
-    },
-  });
-  
+  const NonfungibleTokenPositionDescriptor = await hre.artifacts.readArtifact(
+    "contracts/v3-periphery/NonfungibleTokenPositionDescriptor.sol:NonfungibleTokenPositionDescriptor"
+  );
   const NonfungiblePositionManager = await hre.ethers.getContractFactory("NonfungiblePositionManager");
   const TickLens = await hre.ethers.getContractFactory("TickLens");
   const Quoter = await hre.ethers.getContractFactory("Quoter");
@@ -42,5 +35,7 @@ module.exports = async (deployer) => {
 
   await deployer.deploy(Quoter, [factory.address, WETH]);
   await deployer.deploy(QuoterV2, [factory.address, WETH]);
+
+  // console.log(hre.artifacts.getArtifactPaths())
 
 };
