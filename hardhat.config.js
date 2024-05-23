@@ -62,12 +62,17 @@ module.exports = {
       url: process.env.AMOY_URL,
       accounts: [process.env.PRIVATE_KEY]
     },
+    sepoliaOptimism: {
+      url: process.env.OPTIMISM_SEPOLIA_URL,
+      accounts: [process.env.PRIVATE_KEY]
+    },
   },
   etherscan: {
     apiKey: {
       sepolia: `${process.env.ETHERSCAN_KEY}`,
       bscTestnet: `${process.env.BSCSCAN_KEY}`,
       polygonAmoy: `${process.env.POLYGONSCAN_KEY}`,
+      sepoliaOptimism: `${process.env.OPTIMISM_KEY}`,
     },
     customChains: [
       {
@@ -76,6 +81,14 @@ module.exports = {
         urls: {
           apiURL: "https://api-amoy.polygonscan.com/api",
           browserURL: "https://amoy.polygonscan.com"
+        },
+      },
+      {
+        network: "sepoliaOptimism",
+        chainId: 11155420,
+        urls: {
+          apiURL: "https://api-sepolia-optimistic.etherscan.io/api",
+          browserURL: "https://api-sepolia-optimistic.etherscan.io"
         },
       }
     ]
